@@ -1,0 +1,11 @@
+--TraceApp Map Info--
+Switch: 1
+	1 : 1
+Switch: 2
+	2 : 1
+Switch: 3
+	3 : 1
+Switch: 4
+	4 : 1
+Switch: 5
+	5 : 1

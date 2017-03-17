@@ -230,7 +230,7 @@ public class TraceModule implements IOFMessageListener, IFloodlightModule, INetw
 				
 				// TODO: Redundant code
 				try {
-					tp.deserialize(data, 14, data[14]);
+					tp.deserialize(data, 0, data[0]);
 				} catch (PacketParsingException e) {
 					e.printStackTrace();
 				}
