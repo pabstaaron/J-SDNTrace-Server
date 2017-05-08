@@ -30,7 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import core.*;
-import core.TraceAppController.PortMacPair;
+import core.PortMacPair;
 import net.floodlightcontroller.core.FloodlightContext;
 import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.IOFMessageListener;
@@ -307,7 +307,7 @@ public class TraceModule implements IOFMessageListener, IFloodlightModule, INetw
 		for(OFPortDesc p : sw.getPorts()){
 			if(p.getHwAddr().getLong() < 0)
 				continue;
-			PortMacPair portMac = tracer.new PortMacPair();
+			PortMacPair portMac = new PortMacPair();
 			
 			portMac.setPort(p.getPortNo().getPortNumber());
 		
