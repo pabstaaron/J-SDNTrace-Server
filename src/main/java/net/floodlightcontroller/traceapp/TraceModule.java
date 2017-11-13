@@ -53,7 +53,7 @@ import net.floodlightcontroller.devicemanager.SwitchPort;
 import net.floodlightcontroller.packet.Data;
 import net.floodlightcontroller.packet.Ethernet;
 import net.floodlightcontroller.packet.PacketParsingException;
-import net.floodlightcontroller.statistics.*;
+//import net.floodlightcontroller.statistics.*;
 
 /**
  * Plugs the TraceApp into Floodlight.
@@ -159,7 +159,7 @@ public class TraceModule implements IOFMessageListener, IFloodlightModule, INetw
 	
 	protected IDeviceService deviceManager;
 	
-	protected IStatisticsService statsProvider;
+//	protected IStatisticsService statsProvider;
 	
 	private TraceModule.DeviceListener dl;
 	
@@ -186,7 +186,7 @@ public class TraceModule implements IOFMessageListener, IFloodlightModule, INetw
 	public Collection<Class<? extends IFloodlightService>> getModuleServices() {
 		return null;
 	}
-
+ 
 	@Override
 	public Map<Class<? extends IFloodlightService>, IFloodlightService> getServiceImpls() {
 		return null;
@@ -199,7 +199,7 @@ public class TraceModule implements IOFMessageListener, IFloodlightModule, INetw
 		    l.add(IFloodlightProviderService.class);
 		    l.add(IOFSwitchService.class);
 		    l.add(IDeviceService.class);
-		    l.add(IStatisticsService.class);
+//		    l.add(IStatisticsService.class);
 		    return l;
 	}
 
@@ -208,7 +208,7 @@ public class TraceModule implements IOFMessageListener, IFloodlightModule, INetw
 		floodlightProvider = context.getServiceImpl(IFloodlightProviderService.class);
 		switchProvider = context.getServiceImpl(IOFSwitchService.class);
 		deviceManager = context.getServiceImpl(IDeviceService.class);
-		statsProvider = context.getServiceImpl(IStatisticsService.class);
+//		statsProvider = context.getServiceImpl(IStatisticsService.class);
 		dl = new TraceModule.DeviceListener(this);
 		tracer = new TraceAppController(this);
 		logger = LoggerFactory.getLogger(TraceModule.class);
@@ -253,9 +253,9 @@ public class TraceModule implements IOFMessageListener, IFloodlightModule, INetw
 					SocketAddress addr = sw.getInetAddress();
 					info.setIpAddr((InetSocketAddress)addr);
 					
-					logger.info(((StatisticsCollector)statsProvider).getSwitchStatistics(sw.getId(), OFStatsType.PORT).toString());
+//					logger.info(((StatisticsCollector)statsProvider).getSwitchStatistics(sw.getId(), OFStatsType.PORT).toString());
 					
-					tracer.PacketIn(data, info);
+					tracer.PacketIn(data, info); 
 				}
 				else {
 					logger.info("Saw a reply");
