@@ -1,5 +1,8 @@
 package net.floodlightcontroller.traceapp;
 
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -10,12 +13,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.http.client.ClientProtocolException;
 import org.projectfloodlight.openflow.protocol.OFFlowMod;
 import org.projectfloodlight.openflow.protocol.OFFlowModCommand;
 import org.projectfloodlight.openflow.protocol.OFFlowModFlags;
 import org.projectfloodlight.openflow.protocol.OFMessage;
 import org.projectfloodlight.openflow.protocol.OFPacketOut;
 import org.projectfloodlight.openflow.protocol.OFPortDesc;
+import org.projectfloodlight.openflow.protocol.OFStatsType;
 import org.projectfloodlight.openflow.protocol.OFType;
 import org.projectfloodlight.openflow.protocol.action.OFAction;
 import org.projectfloodlight.openflow.protocol.match.Match;
@@ -49,6 +54,7 @@ import net.floodlightcontroller.devicemanager.SwitchPort;
 import net.floodlightcontroller.packet.Data;
 import net.floodlightcontroller.packet.Ethernet;
 import net.floodlightcontroller.packet.PacketParsingException;
+import net.floodlightcontroller.statistics.*;
 
 /**
  * Plugs the TraceApp into Floodlight.
@@ -154,6 +160,8 @@ public class TraceModule implements IOFMessageListener, IFloodlightModule, INetw
 	
 	protected IDeviceService deviceManager;
 	
+	protected IStatisticsService statsProvider;
+	
 	private TraceModule.DeviceListener dl;
 	
 	private static final int TRACE_ETHER = 0x8220;
@@ -192,6 +200,7 @@ public class TraceModule implements IOFMessageListener, IFloodlightModule, INetw
 		    l.add(IFloodlightProviderService.class);
 		    l.add(IOFSwitchService.class);
 		    l.add(IDeviceService.class);
+		    l.add(IStatisticsService.class);
 		    return l;
 	}
 
@@ -200,6 +209,7 @@ public class TraceModule implements IOFMessageListener, IFloodlightModule, INetw
 		floodlightProvider = context.getServiceImpl(IFloodlightProviderService.class);
 		switchProvider = context.getServiceImpl(IOFSwitchService.class);
 		deviceManager = context.getServiceImpl(IDeviceService.class);
+		statsProvider = context.getServiceImpl(IStatisticsService.class);
 		dl = new TraceModule.DeviceListener(this);
 		tracer = new TraceAppController(this);
 		logger = LoggerFactory.getLogger(TraceModule.class);
@@ -235,14 +245,26 @@ public class TraceModule implements IOFMessageListener, IFloodlightModule, INetw
 					e.printStackTrace();
 				}
 				
-				if(tp.isRequest())
-					tracer.PacketIn(data, sw.getId().getLong(), null);
+				if(tp.isRequest()){ 
+					logger.info("Saw request");
+					SwitchInfo info = new SwitchInfo();
+					
+					info.setDpid(sw.getId());
+					info.setLinkLatency(sw.getLatency());
+					SocketAddress addr = sw.getInetAddress();
+					info.setIpAddr((InetSocketAddress)addr);
+					
+					logger.info(((StatisticsCollector)statsProvider).getSwitchStatistics(sw.getId(), OFStatsType.PORT).toString());
+					
+					tracer.PacketIn(data, info);
+				}
 				else {
 					logger.info("Saw a reply");
+					logger.info(tp.toString());
 				}
 			}
 			else
-				return Command.CONTINUE; // Ignore ARP for the time being
+				return Command.CONTINUE; // Ignore all non-trace packets
 			default:
 				break;
 		}

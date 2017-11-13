@@ -188,6 +188,7 @@ public class StatisticsCollector implements IFloodlightModule, IStatisticsServic
 		l.add(IOFSwitchService.class);
 		l.add(IThreadPoolService.class);
 		l.add(IRestApiService.class);
+		
 		return l;
 	}
 
@@ -334,12 +335,14 @@ public class StatisticsCollector implements IFloodlightModule, IStatisticsServic
 
 	/**
 	 * Get statistics from a switch.
+	 * 
+	 * Modified to public by Aaron Pabst, 1/11/17
 	 * @param switchId
 	 * @param statsType
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	protected List<OFStatsReply> getSwitchStatistics(DatapathId switchId, OFStatsType statsType) {
+	public List<OFStatsReply> getSwitchStatistics(DatapathId switchId, OFStatsType statsType) {
 		IOFSwitch sw = switchService.getSwitch(switchId);
 		ListenableFuture<?> future;
 		List<OFStatsReply> values = null;
