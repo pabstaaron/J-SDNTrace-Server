@@ -1,13 +1,6 @@
 --TraceApp Map Info--
 Switch: 1
-	2448362095113 : 2
-	280012342981488 : 3
 Switch: 2
-	4 : 4
 Switch: 3
-	5 : 3
 Switch: 4
-	6 : 4
 Switch: 5
-	2 : 3
-	7 : 2
